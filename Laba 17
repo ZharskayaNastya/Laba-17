@@ -1,0 +1,58 @@
+import java.io.*;
+import java.util.Scanner;
+class Primer implements Serializable{
+   double x;
+   double y;
+    public Primer(double x) {
+        this.x = x;
+        this.y = 0;
+    }
+
+    public double Calc(double x) {
+        y = x - Math.sin(x);
+        System.out.println("Y = " + y);
+        return y;
+    }
+        void save() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Save.txt"))) {
+            oos.writeObject(this);
+            System.out.println("Сохранено!");
+        } catch (IOException ex) {
+            System.out.println("Ошибка" + ex.getMessage());
+        }
+    }
+        void upload() {
+            try(ObjectInputStream ios = new ObjectInputStream(new FileInputStream("Save.txt"))){
+                Primer p = (Primer)ios.readObject();
+                this.x = p.x;
+                this.y = p.y;
+                System.out.println("Загружено: х = "+x+", y = "+y);
+            }
+            catch (Exception ex){
+                System.out.println("Ошибка" + ex.getMessage());
+            }
+        }
+    }
+public class Main {
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Введите х ");
+        double x1 = scan.nextDouble();
+        Primer primer = new Primer(x1);
+        primer.Calc(x1);
+        while (true){
+            System.out.print("Введите: save/upload/exit: ");
+            String s = scan.next();
+            if(s.equals("save")){
+                primer.save();
+            }
+            else if (s.equals("upload")) {
+                primer.upload();
+            }
+            else {
+                break;
+            }
+        }
+
+    }
+}
